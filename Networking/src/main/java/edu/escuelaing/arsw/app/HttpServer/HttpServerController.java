@@ -1,0 +1,20 @@
+package edu.escuelaing.arsw.app.HttpServer;
+
+import edu.escuelaing.arsw.app.HttpServer.HttpServer;
+
+import java.io.IOException;
+import java.net.URISyntaxException;
+
+public class HttpServerController {
+
+    public static void main(String[] args) {
+        HttpServer svr = HttpServer.getInstance();
+        try {
+            svr.start(args);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
+    }
+}

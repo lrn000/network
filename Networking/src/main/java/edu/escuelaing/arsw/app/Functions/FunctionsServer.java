@@ -1,4 +1,4 @@
-package edu.escuelaing.arsw.app;
+package edu.escuelaing.arsw.app.Functions;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,7 +7,7 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-public class NumberServer {
+public class FunctionsServer {
     public static void main(String[] args) throws IOException {
         ServerSocket serverSocket = null;
         try {
@@ -37,18 +37,21 @@ public class NumberServer {
                 }if(inputLine.contains("tan")){
                    fun="tan";
                 }
+                out.println(fun);
             }else {
                Double val =  Double.valueOf(inputLine);
                Double respuesta=0.0;
                if(fun=="cos"){
                    respuesta=Math.cos(Double.parseDouble(inputLine));
-
+                   //out.println(respuesta);
                }else if(fun=="sin"){
-                   Math.sin(Double.parseDouble(inputLine));
+                   respuesta=Math.sin(Double.parseDouble(inputLine));
+                   //out.println(respuesta);
                }else if(fun=="tan"){
-                   Math.tan(Double.parseDouble(inputLine));
+                   respuesta=Math.tan(Double.parseDouble(inputLine));
+                   //out.println(respuesta);
                }
-               outputLine = "Respuesta"+ " " + "Coseno de " + inputLine + " es: " + respuesta;
+               outputLine = "Respuesta"+ " " + fun  + inputLine + " es: " + respuesta;
                out.println(outputLine);
            }
             /*if (outputLine.equals("Respuestas: Bye."))

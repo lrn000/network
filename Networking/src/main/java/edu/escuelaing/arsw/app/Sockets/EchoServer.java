@@ -1,4 +1,4 @@
-package edu.escuelaing.arsw.app;
+package edu.escuelaing.arsw.app.Sockets;
 
 import java.io.BufferedReader;
 import java.io.IOException;

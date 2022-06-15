@@ -1,4 +1,4 @@
-package edu.escuelaing.arsw.app;
+package edu.escuelaing.arsw.app.HttpServer;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -6,17 +6,19 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.URISyntaxException;
 
 public class HttpServer {
-    private static HttpServer instance= new HttpServer();
+    private static HttpServer _instance= new HttpServer();
 
     private HttpServer(){}
 
     public static HttpServer getInstance(){
-        return instance;
+        return _instance;
     }
 
-    public static void main(String[] args) throws IOException {
+
+    public static void start(String[] args) throws IOException, URISyntaxException {
         ServerSocket serverSocket = null;
         try {
             serverSocket = new ServerSocket(35000);
