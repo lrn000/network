@@ -43,7 +43,7 @@ public class HttpServer {
             }
             PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
             BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-            String inputLine, component = null;
+            String inputLine, outputLine, component = null;
             while ((inputLine = in.readLine()) != null) {
                 if(inputLine.matches("(GET)+.*")){
                     component = inputLine.split(" ")[1];
@@ -57,12 +57,32 @@ public class HttpServer {
                 System.out.println(component);
                 try (BufferedReader reader = new BufferedReader(new FileReader(System.getProperty("user.dir")+component))) {
                     String nameFile = null;
+                    stringBuffer.append("HTTP/1.1 200 OK\r\n");
+                    stringBuffer.append("Content-Type: text/html\r\n");
+                    stringBuffer.append("\r\n");
                     while ((nameFile = reader.readLine()) != null) {
                         stringBuffer.append(nameFile);
                     }
+                }catch (Exception e){
+                    System.out.println(e);
+                    outputLine = "HTTP/1.1 404 OK\r\n"
+                            + "Content-Type: text/html\r\n"
+                            + "\r\n"
+                            + "<!DOCTYPE html>"
+                            + "<html>"
+                            + "<head>"
+                            + "<meta charset=\"UTF-8\">"
+                            + "<title>Title of the document</title>\n" + "</head>"
+                            + "<body>"
+                            + "No se encontro el recurso"
+                            + "</body>"
+                            + "</html>" ;
+                    stringBuffer =  new StringBuffer();
+                    stringBuffer.append(outputLine);
+
                 }
-                out.println("HTTP/1.1 200 OK");
-                out.println("Content-Type: text/html");
+
+
                 out.println();
                 out.println(stringBuffer.toString());
             }
@@ -71,4 +91,7 @@ public class HttpServer {
             in.close();
         }
     }
+
+
+
 }
