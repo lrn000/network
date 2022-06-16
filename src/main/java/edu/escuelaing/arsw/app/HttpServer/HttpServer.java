@@ -52,13 +52,21 @@ public class HttpServer {
                     break;
                 }
             }
-            if(component.matches(".*(.html)")) {
+            String extension=null;
+            if(component.matches(".*(.html)") || component.matches(".*(.css)") || component.matches(".*(.js)")) {
+                if(component.matches(".*(.html)")){
+                    extension="html";
+                }else if(component.matches(".*(.css)")){
+                    extension="css";
+                }else if(component.matches(".*(.js)")){
+                    extension="js";
+                }
                 StringBuffer stringBuffer = new StringBuffer();
                 System.out.println(component);
                 try (BufferedReader reader = new BufferedReader(new FileReader(System.getProperty("user.dir")+component))) {
                     String nameFile = null;
                     stringBuffer.append("HTTP/1.1 200 OK\r\n");
-                    stringBuffer.append("Content-Type: text/html\r\n");
+                    stringBuffer.append("Content-Type: text/"+ extension+"\r\n");
                     stringBuffer.append("\r\n");
                     while ((nameFile = reader.readLine()) != null) {
                         stringBuffer.append(nameFile);
