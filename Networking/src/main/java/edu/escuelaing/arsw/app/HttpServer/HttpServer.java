@@ -1,24 +1,29 @@
 package edu.escuelaing.arsw.app.HttpServer;
 
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.URISyntaxException;
+
 
 public class HttpServer {
-    private static HttpServer _instance= new HttpServer();
 
-    private HttpServer(){}
+    private static HttpServer _instance = new HttpServer();
+
+    public HttpServer() {
+    }
 
     public static HttpServer getInstance(){
         return _instance;
     }
 
 
-    public static void start(String[] args) throws IOException, URISyntaxException {
+    public static void start(String[] args) throws IOException {
         ServerSocket serverSocket = null;
         try {
             serverSocket = new ServerSocket(35000);
@@ -26,8 +31,8 @@ public class HttpServer {
             System.err.println("Could not listen on port: 35000.");
             System.exit(1);
         }
-        boolean running = true;
-        while (running) {
+
+        while(true) {
             Socket clientSocket = null;
             try {
                 System.out.println("Listo para recibir ...");
@@ -37,47 +42,33 @@ public class HttpServer {
                 System.exit(1);
             }
             PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
-            BufferedReader in = new BufferedReader(
-                    new InputStreamReader(clientSocket.getInputStream()));
-            String inputLine, outputLine;
-            String path=" ";
-            boolean firstLine= true;
+            BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+            String inputLine, component = null;
             while ((inputLine = in.readLine()) != null) {
-                if(firstLine){
-                    path=inputLine.split(" ")[1];
-                    System.out.println("paht"+ path);
-                    firstLine=false;
-
+                if(inputLine.matches("(GET)+.*")){
+                    component = inputLine.split(" ")[1];
                 }
-                System.out.println("Received: " + inputLine);
                 if (!in.ready()) {
                     break;
                 }
             }
-
-            outputLine = "HTTP/1.1 200 OK\r\n"
-                    + "Content-Type: text/html\r\n"
-                    + "\r\n"
-                    + "<!DOCTYPE html>"
-                    + "<html>"
-                    + "<head>"
-                    + "<meta charset=\"UTF-8\">"
-                    + "<title>Title of the document</title>\n" + "</head>"
-                    + "<body>"
-                    + "My Web Site"
-                    +"<img src=\"https://as01.epimg.net/diarioas/imagenes/2022/04/20/actualidad/1650466413_240889_1650466661_noticia_normal_recorte1.jpg\">"
-                    + "</body>"
-                    + "</html>" + inputLine;
-
-            out.println(outputLine);
+            if(component.matches(".*(.html)")) {
+                StringBuffer stringBuffer = new StringBuffer();
+                System.out.println(component);
+                try (BufferedReader reader = new BufferedReader(new FileReader(System.getProperty("user.dir")+component))) {
+                    String nameFile = null;
+                    while ((nameFile = reader.readLine()) != null) {
+                        stringBuffer.append(nameFile);
+                    }
+                }
+                out.println("HTTP/1.1 200 OK");
+                out.println("Content-Type: text/html");
+                out.println();
+                out.println(stringBuffer.toString());
+            }
 
             out.close();
-
             in.close();
-
-            clientSocket.close();
         }
-        serverSocket.close();
     }
-
 }
